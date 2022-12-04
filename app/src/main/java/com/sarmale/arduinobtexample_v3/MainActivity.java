@@ -85,21 +85,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Create an Obervable from RxAndroid
+        // Create an Observable from RxAndroid
+        //The code will be executed when an Observer subscribes to the the Observable
         final Observable<String> connectToBTObservable = Observable.create(emitter -> {
             Log.d(TAG, "Calling connectThread class");
+            //Call the constructor of the ConnectThread class
+            //Passing the Arguments: an Object that represents the BT device,
+            // the UUID and then the handler to update the UI
             ConnectThread connectThread = new ConnectThread(arduinoBTModule, arduinoUUID, handler);
             connectThread.run();
-            Log.d(TAG, "Calling ConnectedThread class");
-            ConnectedThread connectedThread = new ConnectedThread(connectThread.getMmSocket());
-            connectedThread.run();
-           // SystemClock.sleep(5000); // simulate delay
-            if(connectedThread.getValueRead()!=null)
-            {
-                emitter.onNext(connectedThread.getValueRead());
+            //Check if Socket connected
+            if (connectThread.getMmSocket().isConnected()) {
+                Log.d(TAG, "Calling ConnectedThread class");
+                //The pass the Open socket as arguments to call the constructor of ConnectedThread
+                ConnectedThread connectedThread = new ConnectedThread(connectThread.getMmSocket());
+                connectedThread.run();
+                if(connectedThread.getValueRead()!=null)
+                {
+                    // If we have read a value from the Arduino
+                    // we call the onNext() function
+                    //This value will be observed by the observer
+                    emitter.onNext(connectedThread.getValueRead());
+                }
+                //We just want to stream 1 value, so we close the BT stream
+                connectedThread.cancel();
             }
-            connectedThread.cancel();
+           // SystemClock.sleep(5000); // simulate delay
+            //Then we close the socket connection
             connectThread.cancel();
+            //We could Override the onComplete function
             emitter.onComplete();
 
         });
@@ -107,13 +121,19 @@ public class MainActivity extends AppCompatActivity {
         connectToDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btReadings.setText("");
                 if (arduinoBTModule != null) {
+                    //We subscribe to the observable until the onComplete() is called
+                    //We also define control the thread management with
+                    // subscribeOn:  the thread in which you want to execute the action
+                    // observeOn: the thread in which you want to get the response
                     connectToBTObservable.
                             observeOn(AndroidSchedulers.mainThread()).
                             subscribeOn(Schedulers.io()).
                             subscribe(valueRead -> {
-                                //myAwesomeTextView.setText("Integer Set:"+integer);
+                                //valueRead returned by the onNext() from the Observable
                                 btReadings.setText(valueRead);
+                                //We just scratched the surface with RxAndroid
                             });
 
                 }
