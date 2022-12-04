@@ -70,7 +70,7 @@ public class ConnectedThread extends Thread {
                 } else {
                     bytes++;
                 }
-                
+
             } catch (IOException e) {
                 Log.d(TAG, "Input stream was disconnected", e);
                 break;
@@ -78,9 +78,7 @@ public class ConnectedThread extends Thread {
         }
 
     }
-
-
-
+    
     // Call this method from the main activity to shut down the connection.
     public void cancel() {
         try {
