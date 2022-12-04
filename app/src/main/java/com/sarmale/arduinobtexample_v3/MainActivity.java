@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // Detect clear 
+        // Set a listener event on a button to clear the texts
         clearValues.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // Create an Obervable from RxAndroid
         final Observable<String> connectToBTObservable = Observable.create(emitter -> {
             Log.d(TAG, "Calling connectThread class");
             ConnectThread connectThread = new ConnectThread(arduinoBTModule, arduinoUUID, handler);
