@@ -59,6 +59,7 @@ public class ConnectedThread extends Thread {
 
                 buffer[bytes] = (byte) mmInStream.read();
                 String readMessage;
+                // If I detect a "\n" means I already read a full measurement
                 if (buffer[bytes] == '\n') {
                     readMessage = new String(buffer, 0, bytes);
                     Log.e(TAG, readMessage);
@@ -69,8 +70,7 @@ public class ConnectedThread extends Thread {
                 } else {
                     bytes++;
                 }
-
-
+                
             } catch (IOException e) {
                 Log.d(TAG, "Input stream was disconnected", e);
                 break;
