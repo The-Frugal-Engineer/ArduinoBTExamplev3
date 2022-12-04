@@ -9,6 +9,9 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.UUID;
 
+
+//Class that will open the BT Socket to the Arduino BT Module
+//Given a BT device, the UUID and a Handler to set the results
 public class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private static final String TAG = "FrugalLogs";
@@ -34,8 +37,6 @@ public class ConnectThread extends Thread {
 
     @SuppressLint("MissingPermission")
     public void run() {
-        // Cancel discovery because it otherwise slows down the connection.
-        //bluetoothAdapter.cancelDiscovery();
 
         try {
             // Connect to the remote device through the socket. This call blocks

@@ -141,14 +141,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         seachDevices.setOnClickListener(new View.OnClickListener() {
-
+            //Display all the linked BT Devices
             @Override
             public void onClick(View view) {
+                //Check if the phone supports BT
                 if (bluetoothAdapter == null) {
                     // Device doesn't support Bluetooth
                     Log.d(TAG, "Device doesn't support Bluetooth");
                 } else {
                     Log.d(TAG, "Device support Bluetooth");
+                    //Check BT enabled. If disabled, we ask the user to enable BT
                     if (!bluetoothAdapter.isEnabled()) {
                         Log.d(TAG, "Bluetooth is disabled");
                         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -182,7 +184,11 @@ public class MainActivity extends AppCompatActivity {
                             String deviceHardwareAddress = device.getAddress(); // MAC address
                             Log.d(TAG, "deviceName:" + deviceName);
                             Log.d(TAG, "deviceHardwareAddress:" + deviceHardwareAddress);
+                            //We append all devices to a String that we will display in the UI
                             btDevicesString=btDevicesString+deviceName+" || "+deviceHardwareAddress+"\n";
+                            //If we find the HC 05 device (the Arduino BT module)
+                            //We assign the device value to the Global variable BluetoothDevice
+                            //We enable the button "Connect to HC 05 device"
                             if (deviceName.equals("HC-05")) {
                                 Log.d(TAG, "HC-05 found");
                                 arduinoUUID = device.getUuids()[0].getUuid();

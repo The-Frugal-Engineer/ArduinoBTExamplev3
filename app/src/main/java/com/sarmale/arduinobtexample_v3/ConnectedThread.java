@@ -9,16 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-
+//Class that given an open BT Socket will
+//Open, manage and close the data Stream from the Arduino BT device
 public class ConnectedThread extends Thread {
-    //private static final String TAG = "MY_APP_DEBUG_TAG";
-    // handler that gets info from Bluetooth service
+
     private static final String TAG = "FrugalLogs";
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-    private byte[] mmBuffer; // mmBuffer store for the stream
-    private final static int MESSAGE_READ = 0;
     private String valueRead;
 
     public ConnectedThread(BluetoothSocket socket) {
@@ -38,7 +36,8 @@ public class ConnectedThread extends Thread {
         } catch (IOException e) {
             Log.e(TAG, "Error occurred when creating output stream", e);
         }
-
+        //Input and Output streams members of the class
+        //We wont use the Output stream of this project
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
     }
@@ -48,15 +47,13 @@ public class ConnectedThread extends Thread {
     }
 
     public void run() {
-        mmBuffer = new byte[1024];
+
         byte[] buffer = new byte[1024];
         int bytes = 0; // bytes returned from read()
-        int numberOfReadings = 0; //to control the number of readinds from the Arduino
+        int numberOfReadings = 0; //to control the number of readings from the Arduino
 
         // Keep listening to the InputStream until an exception occurs.
-
-        //We just want to gt 3 temperatures readings and then return it to the UI
-
+        //We just want to get 1 temperature readings from the Arduino
         while (numberOfReadings < 1) {
             try {
 
@@ -65,7 +62,7 @@ public class ConnectedThread extends Thread {
                 if (buffer[bytes] == '\n') {
                     readMessage = new String(buffer, 0, bytes);
                     Log.e(TAG, readMessage);
-                    //Value to be read by the
+                    //Value to be read by the Observer streamed by the Obervable
                     valueRead=readMessage;
                     bytes = 0;
                     numberOfReadings++;
