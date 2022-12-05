@@ -78,7 +78,7 @@ public class ConnectedThread extends Thread {
         }
 
     }
-    
+
     // Call this method from the main activity to shut down the connection.
     public void cancel() {
         try {
